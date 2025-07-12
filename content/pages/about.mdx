@@ -1,22 +1,87 @@
 ---
 title: About
-description: About the site
+description: About Operon
 ---
 
-Blandit libero volutpat sed cras ornare arcu. Cursus sit amet dictum sit amet. Nunc vel risus commodo viverra maecenas accumsan. Libero id faucibus nisl tincidunt eget nullam non nisi est. Varius quam quisque id diam vel quam. Id donec ultrices tincidunt arcu non.
+# About Operon
 
-## Consent
+Operon is an open-source, modular digital twin and AI platform designed for Industrial IoT, predictive operations, and sustainable systems management. Our mission is to empower industries with self-evolving, transparent, and secure digital solutions for operational excellence.
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Volutpat sed cras ornare arcu. Nibh ipsum consequat nisl vel pretium lectus quam id leo. A arcu cursus vitae congue. Amet justo donec enim diam. Vel pharetra vel turpis nunc eget lorem. Gravida quis blandit turpis cursus in. Semper auctor neque vitae tempus. Elementum facilisis leo vel fringilla est ullamcorper eget nulla. Imperdiet nulla malesuada pellentesque elit eget.
+## What is Operon
 
-Felis donec et odio pellentesque diam volutpat commodo sed.
+Operon provides:
+- **Digital Twin Technology:** High-fidelity virtual replicas of assets, processes, and environments for simulation, optimization, and predictive maintenance.
+- **Self-Evolving AI:** Continuous learning from real-time and historical data to optimize operations, predict failures, and recommend improvements.
+- **Open Source Core:** Transparent, auditable, and extensible foundation for industry-specific integrations and compliance.
+- **Secure by Design:** OAuth2/JWT authentication, RBAC, encrypted data, and audit logging.
+- **Plugin Ecosystem:** Easily extend the platform with custom analytics, AI models, and integrations.
 
-Tortor consequat id porta nibh. Fames ac turpis egestas maecenas pharetra convallis posuere morbi leo. Scelerisque fermentum dui faucibus in. Tortor posuere ac ut consequat semper viverra.
+## Consent & Data Privacy
 
-## Information we collect
+We are committed to protecting your privacy and data. Operon AI only collects the minimum information necessary to provide and improve our services. All data is encrypted in transit and at rest. You control your data and can request deletion at any time.
 
-Amet justo donec enim diam. In hendrerit gravida rutrum quisque non. Hac habitasse platea dictumst quisque sagittis purus sit.
+## Information We Collect
 
-## How we use your Information
+- Device and asset metadata (for digital twin registration)
+- Operational telemetry (for analytics and optimization)
+- User authentication and access logs (for security and compliance)
 
-Ut sem nulla pharetra diam sit amet nisl suscipit adipiscing. Consectetur adipiscing elit pellentesque habitant. Ut tristique et egestas quis ipsum suspendisse ultrices gravida.
+## How We Use Your Information
+
+- To provide digital twin and AI-driven operational insights
+- To improve system performance and reliability
+- To ensure security, compliance, and auditability
+- To support user requests and platform enhancements
+
+## Integration Quickstart
+
+Here's how to register an industrial asset as a digital twin using our open API:
+
+```python
+from fastapi import FastAPI, Depends, HTTPException, status
+from pydantic import BaseModel
+from typing import Optional
+
+app = FastAPI()
+
+def get_current_user():
+    # In production, validate JWT and RBAC here
+    return {"username": "admin", "role": "admin"}
+
+class AssetTwin(BaseModel):
+    name: str
+    type: str
+    location: str
+    status: Optional[str] = "operational"
+    metadata: Optional[dict] = {}
+
+@app.post("/api/twins/register")
+def register_twin(asset: AssetTwin, user=Depends(get_current_user)):
+    if user["role"] != "admin":
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized")
+    # In production, store in database, trigger Kafka, audit log, etc.
+    return {"message": f"Digital twin '{asset.name}' registered.", "twin": asset.dict()}
+```
+
+*See the full developer documentation for advanced integration, security, and plugin development.*
+
+## FAQ
+
+**Q: Is Operon open source?**
+A: Yes, the core is open source for transparency, extensibility, and trust. Premium features and managed services are available for enterprise needs.
+
+**Q: How do I connect my existing systems?**
+A: Use our API and pre-built connectors for SCADA, MES, ERP, and IoT sensors. Custom connectors can be developed using our SDK.
+
+**Q: Can I extend the platform?**
+A: Absolutely. The plugin system allows you to add custom analytics, AI models, and integrations securely.
+
+**Q: How is security handled?**
+A: All endpoints require OAuth2/JWT authentication, with RBAC for fine-grained access control. Data is encrypted in transit and at rest. Audit logging is enabled for all critical actions.
+
+**Q: How do I contribute or get support?**
+A: See our documentation, join the community, or contact us for support and onboarding. Contributions are welcome via GitHub pull requests.
+
+---
+
+For more information, visit our documentation or contact the Operon AI team.
